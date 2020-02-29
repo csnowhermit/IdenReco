@@ -38,7 +38,7 @@ test_image_size = statistics_file_nums(DATASET_TEST_DIR)      # 测试集文件�
 save_direc = os.path.join(os.getcwd(), 'idenreco_models')
 
 # Name of model files
-model_name = 'idenreco_weight_model.{epoch:03d}-{val_acc}.h5'
+model_name = 'idenreco_weight_model.{epoch:03d}-{accuracy}.h5'
 
 # Create Directory if it doesn't exist
 if not os.path.isdir(save_direc):
@@ -48,7 +48,7 @@ modelpath = os.path.join(save_direc, model_name)
 
 # Checkpoint to save best model
 checkpoint = ModelCheckpoint(filepath=modelpath,
-                             monitor='val_acc',
+                             monitor='accuracy',
                              verbose=1,
                              save_best_only=True,
                              save_weights_only=True,
