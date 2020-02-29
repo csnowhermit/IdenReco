@@ -180,9 +180,7 @@ def train_network():
     print(os.listdir(os.path.join(execution_path, "idenreco")))
 
     optimizer = keras.optimizers.Adam(lr=0.01, decay=1e-4)    # 优化器，指定学习率
-    # batch_size = 32
-    batch_size = 8
-    # num_classes = 10
+    batch_size = 32
     num_classes = 5    # 人员种类
     epochs = 200
 
