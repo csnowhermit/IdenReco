@@ -54,6 +54,9 @@ checkpoint = ModelCheckpoint(filepath=modelpath,
                              save_weights_only=True,
                              period=1)
 
+batch_size = 32
+num_classes = 5  # 人员种类
+epochs = 200
 
 '''
     学习率的按轮衰减
@@ -180,9 +183,6 @@ def train_network():
     print(os.listdir(os.path.join(execution_path, "idenreco")))
 
     optimizer = keras.optimizers.Adam(lr=0.01, decay=1e-4)    # 优化器，指定学习率
-    batch_size = 32
-    num_classes = 5    # 人员种类
-    epochs = 200
 
     model = ResNet50((224, 224, 3), num_classes=num_classes)
     model.compile(loss="categorical_crossentropy", optimizer=optimizer, metrics=["accuracy"])
@@ -209,7 +209,7 @@ def train_network():
 # ----------------- The Section Responsible for Inference ---------------------
 CLASS_INDEX = None
 
-MODEL_PATH = os.path.join(execution_path, "idenreco_061-0.7933.h5")
+MODEL_PATH = os.path.join(execution_path, "idenreco_weight_model.043-1.0.h5")
 JSON_PATH = os.path.join(execution_path, "idenreco_model_class.json")
 print("MODEL_PATH:", MODEL_PATH)
 print("JSON_PATH:", JSON_PATH)
@@ -242,10 +242,10 @@ def decode_predictions(preds, top=5, model_json=""):
     识别
 '''
 def run_inference():
-    model = ResNet50(input_shape=(224, 224, 3), num_classes=10)
+    model = ResNet50(input_shape=(224, 224, 3), num_classes=num_classes)
     model.load_weights(MODEL_PATH)
 
-    picture = os.path.join(execution_path, "Haitian-fireman.jpg")
+    picture = os.path.join(execution_path, "inference.jpg")
 
     image_to_predict = image.load_img(picture, target_size=(
         224, 224))
@@ -262,6 +262,6 @@ def run_inference():
         print(str(result[0]), " : ", str(result[1] * 100))    # 预测的类别，置信度
 
 
-# run_inference()
-train_network()
+run_inference()
+# train_network()
 
