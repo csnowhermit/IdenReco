@@ -147,7 +147,7 @@ def resnet_block(input, channel_depth, num_layers, strided_pool_first=False):
     return input
 
 
-def ResNet50(input_shape, num_classes=10):
+def ResNet50(input_shape, num_classes):
     input_object = Input(shape=input_shape)
     layers = [3, 4, 6, 3]
     channel_depths = [256, 512, 1024, 2048]
