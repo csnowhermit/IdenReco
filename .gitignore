@@ -108,8 +108,9 @@ ENV/
 .idea/
 
 idenreco/
-station_data/
-
+idenreco-mark/
+idenreco-dataset/
+idenreco-dataset.7z
 
 
 
