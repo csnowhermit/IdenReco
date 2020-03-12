@@ -14,7 +14,7 @@
 
 ​	完整版数据集：idenreco-dataset.7z，见百度网盘。
 
-​	完整版标注集：IdenReco-mark.zip。
+​	完整版标注集：idenreco-mark.7z。
 
 ​	直接可训练的数据集：training_set.7z，见百度网盘。
 
