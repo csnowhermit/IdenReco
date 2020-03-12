@@ -309,6 +309,6 @@ def run_evaluate():
         print(info)
 
 
-run_inference()
+# run_inference()
 # train_network()
-# run_evaluate()
+run_evaluate()
