@@ -209,7 +209,7 @@ def train_network():
 # ----------------- The Section Responsible for Inference ---------------------
 CLASS_INDEX = None
 
-MODEL_PATH = os.path.join(execution_path, "idenreco_weight_model.043-1.0.h5")
+MODEL_PATH = os.path.join(execution_path, "idenreco_weight_model.037-1.0.h5")
 JSON_PATH = os.path.join(execution_path, "idenreco_model_class.json")
 print("MODEL_PATH:", MODEL_PATH)
 print("JSON_PATH:", JSON_PATH)
@@ -236,7 +236,6 @@ def decode_predictions(preds, top=5, model_json=""):
             each_result.append(CLASS_INDEX[str(i)])
             each_result.append(pred[i])
             results.append(each_result)
-
     return results
 
 
@@ -251,7 +250,7 @@ def run_inference():
 
     image_to_predict = image.load_img(picture, target_size=(
         224, 224))
-    print("before image_to_predict", type(image_to_predict))    # image_to_predict <class 'PIL.Image.Image'>
+    # print("before image_to_predict", type(image_to_predict))    # image_to_predict <class 'PIL.Image.Image'>
     image_to_predict = image.img_to_array(image_to_predict, data_format="channels_last")
     # print("after image_to_predict", type(image_to_predict), image_to_predict.shape, image_to_predict)
 
@@ -274,17 +273,16 @@ def run_evaluate():
     model = ResNet50(input_shape=(224, 224, 3), num_classes=num_classes)
     model.load_weights(MODEL_PATH)
 
-    BATCH_TEST_DIR = os.path.join(DATASET_DIR, "batch_test")
-    print(BATCH_TEST_DIR)
+    # BATCH_TEST_DIR = os.path.join(DATASET_DIR, "batch_test")
+    # print(BATCH_TEST_DIR)
     imgList = []
     pred_right_num = 0
 
-    for people_type in os.listdir(BATCH_TEST_DIR):
-        if people_type == "添乘":    # 添乘穿便衣，不在此识别
-            continue
-        secondpath = os.path.join(BATCH_TEST_DIR, people_type)
+    for people_type in os.listdir(DATASET_TEST_DIR):
+        # if people_type == "添乘":    # 添乘穿便衣，不在此识别
+        #     continue
+        secondpath = os.path.join(DATASET_TEST_DIR, people_type)
         for imgfile in os.listdir(secondpath):
-            # imgList.append((os.path.join(secondpath, imgfile), people_type))
             picture = os.path.join(secondpath, imgfile)
 
             image_to_predict = image.load_img(picture, target_size=(
@@ -299,9 +297,13 @@ def run_evaluate():
             predictiondata = decode_predictions(prediction, top=int(5), model_json=JSON_PATH)
 
             preds = predictiondata[0]    # 每个人只属于一类
-            if preds[1] * 100 > 99:    # 当最高置信度大于95时，才认为是该类人
-                imgList.append((picture, people_type, str(preds[0]), ">=99"))    # 图片路径，标注类型，预测类型
+            if preds[1] * 100 > 80:    # 当最高置信度大于95时，才认为是该类人
+                imgList.append((picture, people_type, str(preds[0]), ">=80", preds[1] * 100))    # 图片路径，标注类型，预测类型
                 if str(preds[0]) == people_type:
+                    pred_right_num += 1
+            else:
+                imgList.append((picture, people_type, str(preds[0]), "<80", preds[1] * 100))
+                if str(preds[0]) == people_type:    # 如果置信度小于阀值，但识别对了，仍记为识别正确
                     pred_right_num += 1
     print("Total: %d, Correct: %d, Accuracy:%f" % (len(imgList), pred_right_num, float(pred_right_num/len(imgList))))
     print("Details:")
@@ -309,6 +311,7 @@ def run_evaluate():
         print(info)
 
 
-# run_inference()
-# train_network()
-run_evaluate()
+if __name__ == '__main__':
+    # run_inference()
+    # train_network()
+    run_evaluate()
