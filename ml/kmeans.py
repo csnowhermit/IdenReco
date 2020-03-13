@@ -7,7 +7,8 @@ from sklearn.cluster import KMeans
 from scipy.spatial.distance import cdist
 
 '''
-    对图片数据集进行kmeans聚类
+    采用聚类的方式做任务身份区分
+    貌似不能聚类：原因，此脚本中用图像全部内容转为灰度图作为特征，而背景影响太大
 '''
 
 def get_file_name(path):
@@ -26,12 +27,19 @@ def knn_detect(file_list, cluster_nums, randomState=True):
     # sift = cv2.xfeatures2d.SIFT_create()
     for file in files:
         # print(file)
-        img = cv2.imread(file)
-        """
-        采用插值的方式进行resize images size,
-        calculate each image hist feature,
-        normalize
-        """
+        # img = cv2.imread(file)    # cv2.imread()读取文件目录不能有中文
+        img = cv2.imdecode(np.fromfile(file, dtype=np.uint8), -1)
+        if img is None:
+            print("img is None:", file)
+            continue
+
+        '''
+            cv2.INTER_NEAREST，最近邻插值法；
+            cv2.INTER_LINEAR，双线性插值法；
+            cv2.INTER_AREA，基于局部像素的重采样；
+            cv2.INTER_CUBIC，基于4*4邻域的3次插值法；
+            cv2.INTER_LANCZOS4，基于8*8像素邻域的Lanczos插值；
+        '''
         img = cv2.resize(img, (64, 64), interpolation=cv2.INTER_CUBIC)
 
         # 第一种特征提取方法
@@ -43,7 +51,9 @@ def knn_detect(file_list, cluster_nums, randomState=True):
 
         # 第二种特征提取方法，转为灰度图，转为一维数组
         img1 = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-        img3 = img1.flatten()
+        # print("img1:", type(img1), img1.shape)
+        img3 = img1.flatten()    # 扁平化（转为一维数组）
+        # print("img3:", type(img3), img3.shape)
         features.append(img3)
 
     """
@@ -86,9 +96,9 @@ def knn_detect(file_list, cluster_nums, randomState=True):
     plt.show()
 
     mark = ['or', 'ob', 'og', 'ok', '^r', '+r', 'sr', 'dr', '<r', 'pr']
-    # plt.plot(kmeans.cluster_centers_)
-    # plt.plot(kmeans.labels_)
-    # plt.show()
+    plt.plot(kmeans.cluster_centers_)
+    plt.plot(kmeans.labels_)
+    plt.show()
     return kmeans.labels_, kmeans.cluster_centers_
 
 
@@ -127,7 +137,7 @@ def painter(labels, cluster_centers, result, input_x):
 
 
 def main():
-    path_filenames = get_file_name("./images2/")
+    path_filenames = get_file_name("../idenreco/train/")
 
     labels, cluster_centers = knn_detect(path_filenames, 5)
 
