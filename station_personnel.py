@@ -83,7 +83,7 @@ lr_scheduler = LearningRateScheduler(lr_schedule)
 '''
 def resnet_module(input, channel_depth, strided_pool=False):
     residual_input = input
-    stride = 1
+    stride = 1    # 卷积核的移动步长
 
     if (strided_pool):
         stride = 2
@@ -92,9 +92,9 @@ def resnet_module(input, channel_depth, strided_pool=False):
         residual_input = BatchNormalization()(residual_input)
 
     input = Conv2D(int(channel_depth / 4), kernel_size=1, strides=stride, padding="same",
-                   kernel_initializer="he_normal")(input)
-    input = BatchNormalization()(input)
-    input = Activation("relu")(input)
+                   kernel_initializer="he_normal")(input)    # int(channel_depth / 4)，特征图个数
+    input = BatchNormalization()(input)    # 批量标准化
+    input = Activation("relu")(input)    # 激活函数：relu，max(0, x)
 
     input = Conv2D(int(channel_depth / 4), kernel_size=3, strides=1, padding="same", kernel_initializer="he_normal")(
         input)
@@ -150,13 +150,13 @@ def resnet_block(input, channel_depth, num_layers, strided_pool_first=False):
 def ResNet50(input_shape, num_classes):
     input_object = Input(shape=input_shape)
     layers = [3, 4, 6, 3]
-    channel_depths = [256, 512, 1024, 2048]
+    channel_depths = [256, 512, 1024, 2048]    #
 
     output = Conv2D(64, kernel_size=7, strides=2, padding="same", kernel_initializer="he_normal")(input_object)
     output = BatchNormalization()(output)
     output = Activation("relu")(output)
 
-    output = MaxPool2D(pool_size=(3, 3), strides=(2, 2))(output)
+    output = MaxPool2D(pool_size=(3, 3), strides=(2, 2))(output)    # 池化层
     output = resnet_first_block_first_module(output, channel_depths[0])
 
     for i in range(4):
@@ -190,17 +190,19 @@ def train_network():
 
     print("Using real time Data Augmentation")
     train_datagen = ImageDataGenerator(
-        rescale=1. / 255,
+        rescale=1. / 255,    # 图像数据的归一化
         horizontal_flip=True)
 
     test_datagen = ImageDataGenerator(
         rescale=1. / 255)
 
+    # 数据的生成器
     train_generator = train_datagen.flow_from_directory(DATASET_TRAIN_DIR, target_size=(224, 224),
                                                         batch_size=batch_size, class_mode="categorical")
     test_generator = test_datagen.flow_from_directory(DATASET_TEST_DIR, target_size=(224, 224), batch_size=batch_size,
                                                       class_mode="categorical")
 
+    # 训练模型
     model.fit_generator(train_generator, steps_per_epoch=math.ceil(train_image_size / batch_size), epochs=epochs,
                         validation_data=test_generator,
                         validation_steps=math.ceil(test_image_size / batch_size), callbacks=[checkpoint, lr_scheduler])
