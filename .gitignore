@@ -107,7 +107,7 @@ ENV/
 
 .idea/
 
-idenreco/
+idenreco-data/
 idenreco-mark/
 idenreco-dataset/
 idenreco-dataset.7z
