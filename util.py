@@ -55,8 +55,8 @@ def statistics_file_nums(path, endfix='.jpg'):
 
 if __name__ == '__main__':
     base_path = "./training_set/"
-    train_path = "./idenreco/train/"
-    test_path = "./idenreco/test/"
+    train_path = "./idenreco-data/train/"
+    test_path = "./idenreco-data/test/"
 
     splitData2TrainAndTest(base_path, train_path, test_path)    # 拆分训练集和测试集
     print("train images:", statistics_file_nums(train_path))

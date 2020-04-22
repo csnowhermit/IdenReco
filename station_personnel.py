@@ -24,8 +24,8 @@ print("execution_path:", execution_path)
 
 
 # SOURCE_PATH = "https://github.com/OlafenwaMoses/IdenProf/releases/download/v1.0/idenprof-jpg.zip"
-FILE_DIR = os.path.join(execution_path, "idenreco-jpg.7z")
-DATASET_DIR = os.path.join(execution_path, "idenreco")
+FILE_DIR = os.path.join(execution_path, "idenreco-simple-dataset.7z")
+DATASET_DIR = os.path.join(execution_path, "idenreco-data")
 DATASET_TRAIN_DIR = os.path.join(DATASET_DIR, "train")
 DATASET_TEST_DIR = os.path.join(DATASET_DIR, "test")
 
@@ -180,7 +180,7 @@ def ResNet50(input_shape, num_classes):
 
 
 def train_network():
-    print(os.listdir(os.path.join(execution_path, "idenreco")))
+    print(os.listdir(os.path.join(execution_path, "idenreco-data")))
 
     optimizer = keras.optimizers.Adam(lr=0.01, decay=1e-4)    # 优化器，指定学习率
 

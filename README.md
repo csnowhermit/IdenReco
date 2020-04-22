@@ -8,7 +8,7 @@
 
 ### 简易版数据集：
 
-​	idenreco-jpg.7z，可直接用
+​	idenreco-simple-dataset.7z，可直接用
 
 ### 完整版数据集：
 
