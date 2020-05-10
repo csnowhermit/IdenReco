@@ -216,9 +216,11 @@ JSON_PATH = os.path.join(execution_path, "idenreco_model_class.json")
 print("MODEL_PATH:", MODEL_PATH)
 print("JSON_PATH:", JSON_PATH)
 
+'''
+    对数据进行归一化：训练集和测试集都要同样操作
+'''
 def preprocess_input(x):
     x *= (1. / 255)
-
     return x
 
 '''
@@ -314,6 +316,6 @@ def run_evaluate():
 
 
 if __name__ == '__main__':
-    # run_inference()
-    # train_network()
-    run_evaluate()
+    run_inference()
+    train_network()
+    # run_evaluate()
